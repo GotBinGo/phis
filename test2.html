@@ -19,7 +19,7 @@ function vector()
 	}});
 	Object.defineProperty(this, "angle", { get: function () 
 	{ 
-		return Math.atan2(v.vy, v.vx) 
+		return Math.atan2(v.vy, v.vx) ;
 	}});
 	Object.defineProperty(this, "angledeg", { get: function () 
 	{ 
@@ -44,7 +44,7 @@ function vector()
 		this.ctx.moveTo(this.x,500-this.y);
 		this.ctx.lineTo(this.x+this.vx,500-this.y - this.vy);
 		this.ctx.stroke();
-	}
+	};
 
 }
 function circle(x,y,r)
