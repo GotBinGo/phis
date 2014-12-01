@@ -1,0 +1,128 @@
+<canvas id="can" width= "500" height="500" style="border:1px solid black;"/>
+<script>
+function point(x,y)
+{
+	this.x = x;
+	this.y = y;
+}
+
+
+function vector()
+{
+	this.x = 0;
+	this.y = 0;
+	this.vx = 0;
+	this.vy = 0;
+	Object.defineProperty(this, "len", { get: function () 
+	{ 
+		return Math.sqrt(this.vx*this.vx+this.vy*this.vy); 
+	}});
+	Object.defineProperty(this, "angle", { get: function () 
+	{ 
+		return Math.atan2(v.vy, v.vx) 
+	}});
+	Object.defineProperty(this, "angledeg", { get: function () 
+	{ 
+		return angle*180/Math.PI; 
+	}});
+	Object.defineProperty(this, "d", { get: function () 
+	{ 
+		return new point(this.vx/this.len,this.vy/this.len); 
+	}});
+	Object.defineProperty(this, "rn", { get: function () 
+	{ 
+		return new point(-this.vy,this.vx); 
+	}});
+	Object.defineProperty(this, "ln", { get: function () 
+	{ 
+		return new point(this.vy,-this.vx); 
+	}});
+
+	this.draw = function()
+	{
+		this.ctx.beginPath();
+		this.ctx.moveTo(this.x,500-this.y);
+		this.ctx.lineTo(this.x+this.vx,500-this.y - this.vy);
+		this.ctx.stroke();
+	}
+
+}
+function circle(x,y,r)
+{
+	this.x = x;
+	this.y = y;
+	this.r = r;
+	this.vx = 0;
+	this.vy = 0;
+	
+	
+	this.draw = function()
+	{
+		this.ctx.beginPath();
+		this.ctx.arc(this.x,500-this.y,this.r,0,2*Math.PI);
+		this.ctx.stroke();
+	}
+	this.move = function(objs)
+	{
+		this.x += this.vx;
+		this.y += this.vy;
+	}
+}
+
+var c = document.getElementById("can");
+window.addEventListener("keydown", move,true);
+function move(e)
+{
+	if ( e.keyCode == 37) 
+	{	
+		a.x1 --;
+	}
+	if ( e.keyCode == 38) 
+	{
+		a.y1 ++;
+	}
+	if ( e.keyCode == 39)
+	{
+		a.x1 ++;aa
+	}
+	if ( e.keyCode == 40) 
+	{
+		a.y1 --;
+	}	
+}
+ctx = c.getContext("2d");
+ctx.font = '10pt Calibri';
+vector.prototype.ctx = ctx;
+circle.prototype.ctx = ctx;
+setInterval(frame,20);
+a = new vector();
+a.vx = 10;
+a.vy = 10;
+function frame()
+{
+	ctx.fillStyle="white";
+	ctx.fillRect(0,0,500,500);
+	ctx.fillStyle="black";
+
+	//p = a.inter(b);
+
+	
+	
+	//end update
+	
+	//draw
+	a.draw();
+	//b.draw();
+	/*
+	new circle(a.x1,a.y1,3).draw();
+	new circle(p.x,p.y,5).draw();
+	if(p.m1 < 0)
+		new line(p.x,p.y,p.x+10,p.y+(-(p.m2-p.m1))*10).draw();
+	else
+		new line(p.x,p.y,p.x-10,p.y-(-(p.m2-p.m1))*10).draw();
+	*/
+	ctx.fillText(a.d.y,10,20);
+	ctx.fillText("a.off()",10,30);
+	//end draw
+}
+</script>

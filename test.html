@@ -1,0 +1,168 @@
+<canvas id="can" width= "500" height="500" style="border:1px solid black;"/>
+<script>
+var alldraw = true;
+var uidcounter = 0;
+var kaa, kab;
+function getUid()
+{
+	uidcounter++;
+	return uidcounter;
+}
+function point(x,y)
+{
+	this.x = x;
+	this.y = y;
+}
+function line(x1,y1,x2,y2)
+{
+	this.x1 = x1;
+	this.x2 = x2;
+	this.y1 = y1;
+	this.y2 = y2;
+	this.m = function()
+	{
+		xd = this.x2-this.x1;		
+		yd = this.y2-this.y1;
+		return yd/xd;
+	}
+	this.off = function ()
+	{	
+		var ma = this.m()
+		
+		if (ma == Infinity || ma == -Infinity)
+			return this.x1;
+		return this.y2 - this.x2* ma;
+	}
+	this.draw = function()
+	{	
+		this.ctx.beginPath();
+		this.ctx.moveTo(this.x1,500-this.y1);
+		this.ctx.lineTo(this.x2,500-this.y2);
+		this.ctx.stroke();
+	}
+	this.inter = function (line)
+	{
+		var a = (line.off()-this.off());
+		var b = (this.m()-line.m());
+		
+		var x = a/b;
+		/*if (b == Infinity || b == -Infinity)
+			x = a;*/
+		if(b == Infinity || b == -Infinity)
+			x = this.x2;
+		var p = new point(x,line.m()*x+line.off());
+		
+		if(p.y == -Infinity || p.y == Infinity)
+		{
+			x = line.x2;
+			var p = new point(x,this.m()*x+this.off());
+		//	p.y  = this.m()*x+this.off()
+		}		
+		kaa = p.x;
+		kab = line.m();
+		p.m1 = this.m();
+		p.m2 = line.m();
+		return p;
+	}
+}
+function circle(x,y,r)
+{
+	this.x = x;
+	this.y = y;
+	this.r = r;
+	this.vx = 0;
+	this.vy = 0;
+	
+	this.draw = function()
+	{
+		this.ctx.beginPath();
+		this.ctx.arc(this.x,500-this.y,this.r,0,2*Math.PI);
+		this.ctx.stroke();
+	}
+	this.move = function(objs)
+	{
+		this.x += this.vx;
+		this.y += this.vy;
+	}
+}
+var c = document.getElementById("can");
+window.addEventListener("keydown", asdd,true);
+function asdd(e)
+{
+	if ( e.keyCode == 37) 
+	{	
+		a.x1 --;
+	}
+	if ( e.keyCode == 38) 
+	{
+		a.y1 ++;
+	}
+	if ( e.keyCode == 39)
+	{
+		a.x1 ++;aa
+	}
+	if ( e.keyCode == 40) 
+	{
+		a.y1 --;
+	}
+	
+	if ( e.keyCode == 65) 
+	{	
+		a.x2 --;
+	}
+	if ( e.keyCode == 87) 
+	{
+		a.y2 ++;
+	}
+	if ( e.keyCode == 68)
+	{
+		a.x2 ++;
+	}
+	if ( e.keyCode == 83) 
+	{
+		a.y2 --;
+	}
+}
+ctx = c.getContext("2d");
+ctx.font = '10pt Calibri';
+line.prototype.ctx = ctx;
+circle.prototype.ctx = ctx;
+setInterval(frame,20);
+a = new line(50,100,50,50);
+b = new line(50,50,100,100);
+c = new circle(10,10,5);
+b.vx = 1;
+function frame()
+{
+	//clear
+	//c.width = c.width;
+
+	ctx.fillStyle="white";
+	ctx.fillRect(0,0,500,500);
+	ctx.fillStyle="black";
+	//end clear
+	
+	//update
+	//c.move();
+	p = a.inter(b);
+
+	
+	
+	//end update
+	
+	//draw
+	a.draw();
+	b.draw();
+	/*
+	new circle(a.x1,a.y1,3).draw();
+	new circle(p.x,p.y,5).draw();
+	if(p.m1 < 0)
+		new line(p.x,p.y,p.x+10,p.y+(-(p.m2-p.m1))*10).draw();
+	else
+		new line(p.x,p.y,p.x-10,p.y-(-(p.m2-p.m1))*10).draw();
+	*/
+	ctx.fillText(p.m1,10,20);
+	ctx.fillText(p.m2,10,30);
+	//end draw
+}
+</script>
