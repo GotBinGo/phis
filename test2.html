@@ -9,10 +9,39 @@ function point(x,y)
 
 function vector()
 {
-	this.x = 0;
-	this.y = 0;
-	this.vx = 0;
-	this.vy = 0;
+	this.p0 = new point(0,0);
+	this.p1 = new point(0,0);
+	
+	Object.defineProperty(this, "v", { get: function () 
+	{ 
+		return new point(this.vx, this.vy); 
+	},
+	set: function (val) //try avoiding
+	{ 
+		this.p1.x = this.p0.x+val.x; 
+		this.p1.y = this.p0.y+val.y; 
+	}});
+	
+	Object.defineProperty(this, "vx", { get: function () 
+	{ 
+		return this.p1.x-this.p0.x; 
+	},
+	set: function (val) //try avoiding
+	{ 
+		this.p1.x = this.p0.x+val; 
+	},
+	
+	});
+	Object.defineProperty(this, "vy", { get: function () 
+	{ 
+		return this.p1.y-this.p0.y;
+	},
+	set: function (val) //try avoiding
+	{ 
+		this.p1.y = this.p0.y+val; 
+	}
+	});
+	
 	Object.defineProperty(this, "len", { get: function () 
 	{ 
 		return Math.sqrt(this.vx*this.vx+this.vy*this.vy); 
@@ -25,7 +54,7 @@ function vector()
 	{ 
 		return angle*180/Math.PI; 
 	}});
-	Object.defineProperty(this, "d", { get: function () 
+	Object.defineProperty(this, "d", { get: function ()  //unit size vector
 	{ 
 		return new point(this.vx/this.len,this.vy/this.len); 
 	}});
@@ -41,8 +70,8 @@ function vector()
 	this.draw = function()
 	{
 		this.ctx.beginPath();
-		this.ctx.moveTo(this.x,500-this.y);
-		this.ctx.lineTo(this.x+this.vx,500-this.y - this.vy);
+		this.ctx.moveTo(this.p0.x,this.p0.y);
+		this.ctx.lineTo(this.p1.x,this.p1.y);
 		this.ctx.stroke();
 	}
 
@@ -96,8 +125,8 @@ vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
-a.vx = 10;
-a.vy = 10;
+a.p0 = new point(15,15);
+a.p1 = new point(15,5);
 function frame()
 {
 	ctx.fillStyle="white";
@@ -112,6 +141,10 @@ function frame()
 	
 	//draw
 	a.draw();
+	b = new vector();
+	b.p0 = a.p0;
+	b.v = a.ln;
+	b.draw();
 	//b.draw();
 	/*
 	new circle(a.x1,a.y1,3).draw();
