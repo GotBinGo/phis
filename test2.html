@@ -7,11 +7,18 @@ function point(x,y)
 }
 
 
-function vector()
+function vector(x1, y1, x2,y2)
 {
-	this.p0 = new point(0,0);
-	this.p1 = new point(0,0);
-	
+	if(x1 === undefined || y1 === undefined || x2 === undefined  || y2 === undefined )
+	{
+		this.p0 = new point(0,0);
+		this.p1 = new point(0,0);
+	}
+	else
+	{
+		this.p0 = new point(x1,y1);
+		this.p1 = new point(x2,y2);
+	}
 	Object.defineProperty(this, "v", { get: function () 
 	{ 
 		return new point(this.vx, this.vy); 
@@ -65,8 +72,24 @@ function vector()
 	Object.defineProperty(this, "ln", { get: function () 
 	{ 
 		return new point(this.vy,-this.vx); 
-	}});
-
+	}});		
+	this.add = function(v)
+	{
+		return new vector(0,0,this.p0.x+v.p0.x, this.p1.y+this.p1.y);
+	}
+	this.dp = function(v)
+	{
+		var tmp = this.vx*v.vx+this.vy*v.vy;
+		return tmp;
+	}
+	this.proj = function(v)
+	{
+		var t1 = this.dp(v)*v.d.x;
+		var	t2 = this.dp(v)*v.d.y;
+		var tmp = new vector(0,0,t1,t2)
+		return tmp;
+	}
+	
 	this.draw = function()
 	{
 		this.ctx.beginPath();
@@ -125,8 +148,8 @@ vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
-a.p0 = new point(15,15);
-a.p1 = new point(15,5);
+a.p1 = new point(50,50);
+a.p0 = new point(100,100);
 function frame()
 {
 	ctx.fillStyle="white";
@@ -142,9 +165,12 @@ function frame()
 	//draw
 	a.draw();
 	b = new vector();
-	b.p0 = a.p0;
-	b.v = a.ln;
+	b.p0 = new point(50, 50);
+	b.p1 = new point(50, 100);
 	b.draw();
+	var m = a.proj(b);
+	m.draw();
+	
 	//b.draw();
 	/*
 	new circle(a.x1,a.y1,3).draw();
@@ -154,8 +180,8 @@ function frame()
 	else
 		new line(p.x,p.y,p.x-10,p.y-(-(p.m2-p.m1))*10).draw();
 	*/
-	ctx.fillText(a.d.y,10,20);
-	ctx.fillText("a.off()",10,30);
+	ctx.fillText(m.vx,10,400);
+	ctx.fillText(m.vy,10,420);
 	//end draw
 }
 </script>
