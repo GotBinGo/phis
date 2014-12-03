@@ -36,7 +36,7 @@ function vector(x1, y1, x2,y2)
 	set: function (val) //try avoiding
 	{ 
 		this.p1.x = this.p0.x+val; 
-	},
+	}
 	
 	});
 	Object.defineProperty(this, "vy", { get: function () 
@@ -76,22 +76,27 @@ function vector(x1, y1, x2,y2)
 	this.add = function(v)
 	{
 		return new vector(0,0,this.p0.x+v.p0.x, this.p1.y+this.p1.y);
-	}
+	};
 	this.dp = function(v)
 	{
 		var tmp = this.vx*v.vx+this.vy*v.vy;
 		return tmp;
-	}
+	};
 	this.proj = function(v)
 	{
 		var t1 = this.dp(v)*v.d.x;
-		var	t2 = this.dp(v)*v.d.y;
-		var tmp = new vector(0,0,t1,t2)
+		var t2 = this.dp(v)*v.d.y;
+	//	var tmp = new vector(0,0,Math.sqrt(t1),Math.sqrt(t2));
+		 var tmp = new vector(0,0,t1,t2);
 		return tmp;
-	}
+	};
 	
-	this.draw = function()
+	this.draw = function(c)
 	{
+		 ctx.strokeStyle=c;
+		if(c===undefined)
+			 ctx.strokeStyle="black";
+		
 		this.ctx.beginPath();
 		this.ctx.moveTo(this.p0.x,this.p0.y);
 		this.ctx.lineTo(this.p1.x,this.p1.y);
@@ -113,12 +118,12 @@ function circle(x,y,r)
 		this.ctx.beginPath();
 		this.ctx.arc(this.x,500-this.y,this.r,0,2*Math.PI);
 		this.ctx.stroke();
-	}
+	};
 	this.move = function(objs)
 	{
 		this.x += this.vx;
 		this.y += this.vy;
-	}
+	};
 }
 
 var c = document.getElementById("can");
@@ -135,7 +140,7 @@ function move(e)
 	}
 	if ( e.keyCode == 39)
 	{
-		a.x1 ++;aa
+		a.x1 ++;
 	}
 	if ( e.keyCode == 40) 
 	{
@@ -148,8 +153,8 @@ vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
-a.p1 = new point(50,50);
-a.p0 = new point(100,100);
+a.p0 = new point(50,50);
+a.p1 = new point(100,100);
 function frame()
 {
 	ctx.fillStyle="white";
@@ -165,13 +170,19 @@ function frame()
 	//draw
 	a.draw();
 	b = new vector();
-	b.p0 = new point(50, 50);
-	b.p1 = new point(50, 100);
+	b.p0 = new point(40,0);
+	b.p1 = a.p0;
 	b.draw();
-	var m = a.proj(b);
-	m.draw();
+	var tm = new vector();
+	tm.vx = b.d.x;
+	tm.vy = b.d.y;
+//	var tr = new vector(0,0,tm.lr.x,tm.lr.y);
 	
-	//b.draw();
+	var m = a.proj(tm);
+	
+	new vector(a.p0.x,a.p0.y,a.p0.x+m.vx,a.p0.y).draw('red');
+	new vector(a.p0.x,a.p0.y,a.p0.x,a.p0.y+m.vy).draw('red');
+	//b..draw();
 	/*
 	new circle(a.x1,a.y1,3).draw();
 	new circle(p.x,p.y,5).draw();
@@ -180,8 +191,8 @@ function frame()
 	else
 		new line(p.x,p.y,p.x-10,p.y-(-(p.m2-p.m1))*10).draw();
 	*/
-	ctx.fillText(m.vx,10,400);
-	ctx.fillText(m.vy,10,420);
+	ctx.fillText(tm.vx,10,400);
+	ctx.fillText(tm.vy,10,420);
 	//end draw
 }
 </script>
