@@ -1,0 +1,120 @@
+﻿
+//----------------------------------------------------------------------
+//Instance of Symbol 9 MovieClip in Frame 1
+//----------------------------------------------------------------------
+onClipEvent (enterFrame) {
+    _root.runMe();
+}
+﻿
+//----------------------------------------------------------------------
+//Symbol 3 Button
+//----------------------------------------------------------------------
+on (press) {
+    _root.game.dragging = true;
+    startDrag (this, true);
+}
+on (release, releaseOutside) {
+    _root.game.dragging = false;
+    stopDrag();
+}
+﻿
+//----------------------------------------------------------------------
+//Frame 1
+//----------------------------------------------------------------------
+    function drawAll(v) {
+        _root.p0._x = v.p0.x;
+        _root.p0._y = v.p0.y;
+        _root.p1._x = v.p1.x;
+        _root.p1._y = v.p1.y;
+        _root.p2._x = game.v2.p1.x;
+        _root.p2._y = game.v2.p1.y;
+        _root.dragger0._x = v.p0.x;
+        _root.dragger0._y = v.p0.y;
+        _root.dragger1._x = v.p1.x;
+        _root.dragger1._y = v.p1.y;
+        _root.dragger2._x = game.v2.p1.x;
+        _root.dragger2._y = game.v2.p1.y;
+        _root.v1._x = v.p0.x;
+        _root.v1._y = v.p0.y;
+        _root.v2._x = v.p0.x;
+        _root.v2._y = v.p0.y;
+        _root.v3._x = v.p0.x;
+        _root.v3._y = v.p0.y;
+        _root.v4._x = v.p0.x;
+        _root.v4._y = v.p0.y;
+        _root.v5._x = v.p0.x;
+        _root.v5._y = v.p0.y;
+        _root.v1._xscale = v.vx;
+        _root.v1._yscale = v.vy;
+        _root.v2._xscale = game.v2.vx;
+        _root.v2._yscale = game.v2.vy;
+        _root.v3._xscale = game.v2.rx;
+        _root.v3._yscale = game.v2.ry;
+        _root.v4._xscale = game.proj1.vx;
+        _root.v4._yscale = game.proj1.vy;
+        _root.v5._xscale = game.proj2.vx;
+        _root.v5._yscale = game.proj2.vy;
+        _root.arrow1._x = v.p1.x;
+        _root.arrow1._y = v.p1.y;
+        _root.arrow1._rotation = 57.2957795130823 * Math.atan2(v.vy, v.vx);
+        _root.arrow4._x = v.p0.x + game.proj1.vx;
+        _root.arrow4._y = v.p0.y + game.proj1.vy;
+        _root.arrow4._rotation = 57.2957795130823 * Math.atan2(game.proj1.vy, game.proj1.vx);
+        _root.arrow5._x = v.p0.x + game.proj2.vx;
+        _root.arrow5._y = v.p0.y + game.proj2.vy;
+        _root.arrow5._rotation = 57.2957795130823 * Math.atan2(game.proj2.vy, game.proj2.vx);
+    }
+    function runMe() {
+        if (game.dragging) {
+            var v = game.v1;
+            var x = Math.round(_root.dragger1._x);
+            var y = Math.round(_root.dragger1._y);
+            v.p1.x = x;
+            v.p1.y = y;
+            var x = Math.round(_root.dragger0._x);
+            var y = Math.round(_root.dragger0._y);
+            v.p0.x = x;
+            v.p0.y = y;
+            updateVector(v);
+            var v = game.v2;
+            v.p0.x = x;
+            v.p0.y = y;
+            var x = Math.round(_root.dragger2._x);
+            var y = Math.round(_root.dragger2._y);
+            v.p1.x = x;
+            v.p1.y = y;
+            updateVector(v);
+            game.proj1 = projectVector(game.v1, game.v2.dx, game.v2.dy);
+            game.proj2 = projectVector(game.v1, game.v2.lx / game.v2.len, game.v2.ly / game.v2.len);
+            drawAll(game.v1);
+        }
+    }
+    function updateVector(v) {
+        v.vx = v.p1.x - v.p0.x;
+        v.vy = v.p1.y - v.p0.y;
+        v.len = Math.sqrt((v.vx * v.vx) + (v.vy * v.vy));
+        v.dx = v.vx / v.len;
+        v.dy = v.vy / v.len;
+        v.rx = -v.vy;
+        v.ry = v.vx;
+        v.lx = v.vy;
+        v.ly = -v.vx;
+    }
+    function projectVector(v1, dx, dy) {
+        var dp = ((v1.vx * dx) + (v1.vy * dy));
+        var proj = {};
+        proj.vx = dp * dx;
+        proj.vy = dp * dy;
+        return(proj);
+    }
+    fscommand ("fullscreen", "false");
+    fscommand ("allowscale", "false");
+    fscommand ("showmenu", "false");
+    game = {dragging:false};
+    game.v1 = {p0:{x:150, y:100}, p1:{x:200, y:150}};
+    game.v2 = {p0:{x:150, y:100}, p1:{x:150, y:50}};
+    updateVector(game.v1);
+    updateVector(game.v2);
+    game.proj1 = projectVector(game.v1, game.v2.dx, game.v2.dy);
+    game.proj2 = projectVector(game.v1, game.v2.lx / game.v2.len, game.v2.ly / game.v2.len);
+    drawAll(game.v1);

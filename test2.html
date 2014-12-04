@@ -162,6 +162,19 @@ function projectVector(v1, dx, dy) {
     proj.vy = dp * dy;
     return(proj);
 }
+
+function updateVector(v) 
+{
+    v.vx = v.p1.x - v.p0.x;
+    v.vy = v.p1.y - v.p0.y;
+    v.len = Math.sqrt((v.vx * v.vx) + (v.vy * v.vy));
+    v.dx = v.vx / v.len;
+    v.dy = v.vy / v.len;
+    v.rx = -v.vy;
+    v.ry = v.vx;
+    v.lx = v.vy;
+    v.ly = -v.vx;
+}
 function frame()
 {
 	ctx.fillStyle="white";
@@ -177,17 +190,25 @@ function frame()
 	a.draw();
 	b = new vector();
 	b.p0 = new point(150,100);
-	b.p1 = new point(200,50);
+	b.p1 = new point(150,50);
 	b.draw();	
+	updateVector(a); 
+	updateVector(b);
+	p1 = projectVector(a, b.dx, b.dy);
+    p2 = projectVector(a, b.lx / b.len, b.ly / b.len);
+	new vector(a.p0.x,a.p0.y,p1.vx,p1,vy).draw();
+	new vector(a.p0.x,a.p0.y,p2.vx,p2,vy).draw();
+	
 	/*var tm = new vector(0,0,b.d.x,b.d.y);	
-	var m = b.proj(a);*/
+	var m = b.proj(a);
 	var mm = projectVector(a, b.d.x, b.d.y);
 	var m = projectVector(a, b.ln.x / b.len, b.ln.y / b.len);
+	m.vx = mm.vx;
 	m.vx += mm.vx;
 	m.vy += mm.vy;
 	new vector(a.p0.x,a.p0.y,a.p0.x+m.vx,a.p0.y).draw('red');
 	new vector(a.p0.x,a.p0.y,a.p0.x,a.p0.y+m.vy).draw('red');
-	
+	*/
 	//b..draw();
 	/*
 	new circle(a.x1,a.y1,3).draw();
