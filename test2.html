@@ -59,7 +59,7 @@ function vector(x1, y1, x2,y2)
 	}});
 	Object.defineProperty(this, "angledeg", { get: function () 
 	{ 
-		return angle*180/Math.PI; 
+		return this.angle*180/Math.PI; 
 	}});
 	Object.defineProperty(this, "d", { get: function ()  //unit size vector
 	{ 
@@ -87,7 +87,7 @@ function vector(x1, y1, x2,y2)
 		var t1 = this.dp(v)*v.d.x;
 		var t2 = this.dp(v)*v.d.y;
 	//	var tmp = new vector(0,0,Math.sqrt(t1),Math.sqrt(t2));
-		 var tmp = new vector(0,0,t1,t2);
+		var tmp = new vector(0,0,t1,t2);
 		return tmp;
 	};
 	
@@ -155,6 +155,13 @@ setInterval(frame,20);
 a = new vector();
 a.p0 = new point(50,50);
 a.p1 = new point(100,100);
+function projectVector(v1, dx, dy) {
+    var dp = ((v1.vx * dx) + (v1.vy * dy));
+    var proj = {};
+    proj.vx = dp * dx;
+    proj.vy = dp * dy;
+    return(proj);
+}
 function frame()
 {
 	ctx.fillStyle="white";
@@ -169,15 +176,12 @@ function frame()
 	//draw
 	a.draw();
 	b = new vector();
-	b.p0 = new point(40,0);
+	b.p0 = new point(100,50);
 	b.p1 = a.p0;
-	b.draw();
-	var tm = new vector();
-	tm.vx = b.d.x;
-	tm.vy = b.d.y;
-//	var tr = new vector(0,0,tm.lr.x,tm.lr.y);
-	
-	var m = a.proj(tm);
+	b.draw();	
+	/*var tm = new vector(0,0,b.d.x,b.d.y);	
+	var m = b.proj(a);*/
+	var m = projectVector(a,b.d.x,b.d.y);
 	
 	new vector(a.p0.x,a.p0.y,a.p0.x+m.vx,a.p0.y).draw('red');
 	new vector(a.p0.x,a.p0.y,a.p0.x,a.p0.y+m.vy).draw('red');
@@ -190,8 +194,8 @@ function frame()
 	else
 		new line(p.x,p.y,p.x-10,p.y-(-(p.m2-p.m1))*10).draw();
 	*/
-	ctx.fillText(tm.vx,10,400);
-	ctx.fillText(tm.vy,10,420);
+	ctx.fillText(m.vx,10,400);
+	ctx.fillText(m.vy,10,420);
 	//end draw
 }
 </script>
