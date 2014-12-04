@@ -153,8 +153,8 @@ vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
-a.p0 = new point(50,50);
-a.p1 = new point(100,100);
+a.p0 = new point(150,100);
+a.p1 = new point(200,150);
 function projectVector(v1, dx, dy) {
     var dp = ((v1.vx * dx) + (v1.vy * dy));
     var proj = {};
@@ -176,15 +176,18 @@ function frame()
 	//draw
 	a.draw();
 	b = new vector();
-	b.p0 = new point(100,50);
-	b.p1 = a.p0;
+	b.p0 = new point(150,100);
+	b.p1 = new point(200,50);
 	b.draw();	
 	/*var tm = new vector(0,0,b.d.x,b.d.y);	
 	var m = b.proj(a);*/
-	var m = projectVector(a,b.d.x,b.d.y);
-	
+	var mm = projectVector(a, b.d.x, b.d.y);
+	var m = projectVector(a, b.ln.x / b.len, b.ln.y / b.len);
+	m.vx += mm.vx;
+	m.vy += mm.vy;
 	new vector(a.p0.x,a.p0.y,a.p0.x+m.vx,a.p0.y).draw('red');
 	new vector(a.p0.x,a.p0.y,a.p0.x,a.p0.y+m.vy).draw('red');
+	
 	//b..draw();
 	/*
 	new circle(a.x1,a.y1,3).draw();
