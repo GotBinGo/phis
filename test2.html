@@ -109,14 +109,14 @@ function vector(x1, y1, x2,y2) //constructor to be resolved
 		c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
 		var t = c.pp(b)/a.pp(b);	
 		var k = new point(a.p0.x+a.vx*t,a.p0.y+a.vy*t);				
-		if(t > 0 && t < 1)
+		if(t >= 0 && t <= 1)
 		{
 			a = v;
 			b = this;
 			c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
 			var t = c.pp(b)/a.pp(b);	
 			var k = new point(a.p0.x+a.vx*t,a.p0.y+a.vy*t);				
-			if(t > 0 && t < 1)
+			if(t >= 0 && t <= 1)
 				return true;
 			else
 				return false;			
@@ -214,10 +214,10 @@ ctx = c.getContext("2d");
 ctx.font = '10pt Calibri';
 vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
-setInterval(frame,100);
+setInterval(frame,3000);
 a = new vector();
-a.p0 = new point(150,50);
-a.p1 = new point(140,50);
+a.p0 = new point(90,50);
+a.p1 = new point(100,50);
 
 function frame()
 {
@@ -239,11 +239,14 @@ function frame()
 	var onb = new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat);
 	var onbp = new vector(int.x,int.y,int.x+kk.vx,int.y+kk.vy);
 	onb.draw('green');
-	if(b.isinter(a))
+	var isi = b.isinter(a);
+	document.title = isi;
+	if(isi)
 	{
 		a.p0 = onb.p1;		
 		a.vx = onbp.vx;
 		a.vy = onbp.vy;
+		
 	}
 	else
 	{
