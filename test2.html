@@ -80,13 +80,53 @@ function vector(x1, y1, x2,y2) //constructor to be solved
 	}});		
 	this.add = function(v)
 	{
-		return new vector(0,0,this.p0.x+v.p0.x, this.p1.y+this.p1.y);
+		return new vector(this.p0.x,this.p0.y,this.p0.x+this.vx+v.vy, this.p0.y+this.vy+v.vy);
 	};
 	this.dp = function(v)
 	{
 		var tmp = this.vx*v.vx+this.vy*v.vy;
 		return tmp;
 	};
+	this.pp = function(v)
+	{
+		var tmp = this.vx*v.vy-this.vy*v.vx;
+		return tmp;
+	};
+	this.inter = function(v)
+	{
+		var a = this;
+		var b = v;
+		c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
+		var t = c.pp(b)/a.pp(b);	
+		//var m = new vector(a.p0.x+a.vx*t,a.p0.y+a.vy*t);
+		var k = new point(a.p0.x+a.vx*t,a.p0.y+a.vy*t);
+		return k;
+	}
+	this.isinter = function(v)
+	{
+		var a = this;
+		var b = v;
+		c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
+		var t = c.pp(b)/a.pp(b);	
+		var k = new point(a.p0.x+a.vx*t,a.p0.y+a.vy*t);				
+		if(t >= 0 && t <= 1)
+		{
+			a = v;
+			b = this;
+			c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
+			var t = c.pp(b)/a.pp(b);	
+			var k = new point(a.p0.x+a.vx*t,a.p0.y+a.vy*t);				
+			if(t >= 0 && t <= 1)
+				return true;
+			else
+				return false;			
+		}					
+		else
+		{
+			return false;
+		}
+
+	}
 	this.proj = function(v)
 	{
 		var t1 = this.dp(v)*v.d.x;
@@ -95,17 +135,32 @@ function vector(x1, y1, x2,y2) //constructor to be solved
 		var tmp = new vector(0,0,t1,t2);
 		return tmp;
 	};
+	this.project = function(b)
+	{
+		var a = this;
+		p1 = a.proj(new vector(0,0,b.d.x,b.d.y));
+		bln = new vector(b.ln.x,b.ln.y);
+		p2 = a.proj(new vector(0,0,bln.d.x,bln.d.y));
+	//	new vector(a.p0.x,a.p0.y,a.p0.x+p1.vx,a.p0.y+p1.vy).draw('red');
+	//	new vector(a.p0.x,a.p0.y,a.p0.x+p2.vx,a.p0.y+p2.vy).draw('red');
+		p2.vx *= -1;
+		p2.vy *= -1;
+		return new vector(p1.vx+p2.vx,p1.vy+p2.vy);
+	}
 	
 	this.draw = function(c)
 	{
+		
 		 ctx.strokeStyle=c;
 		if(c===undefined)
 			 ctx.strokeStyle="black";
 		
 		this.ctx.beginPath();
+
 		this.ctx.moveTo(this.p0.x,this.p0.y);
 		this.ctx.lineTo(this.p1.x,this.p1.y);
 		this.ctx.stroke();
+		new circle(this.p0.x,this.p0.y,3).draw();
 	};
 
 }
@@ -118,10 +173,13 @@ function circle(x,y,r)
 	this.vy = 0;
 	
 	
-	this.draw = function()
+	this.draw = function(c)
 	{
+		ctx.strokeStyle=c;
+		if(c===undefined)
+			 ctx.strokeStyle="black";
 		this.ctx.beginPath();
-		this.ctx.arc(this.x,500-this.y,this.r,0,2*Math.PI);
+		this.ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
 		this.ctx.stroke();
 	};
 	this.move = function(objs)
@@ -158,8 +216,8 @@ vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
-a.p0 = new point(150,100);
-a.p1 = new point(50,150);
+a.p0 = new point(50,100);
+a.p1 = new point(70,90);
 
 function frame()
 {
@@ -167,26 +225,37 @@ function frame()
 	ctx.fillRect(0,0,500,500);
 	ctx.fillStyle="black";
 
-	//p = a.inter(b);
-
-	
-	//end update
-	
-	//draw
 	a.draw();
-	b = new vector();
-	b.p0 = a.p0;
-	b.p1 = new point(20,15);
+	
+	b = new vector('red');
+	b.p0 = new point(50,50);;
+	b.p1 = new point(100,50);
 	b.draw();	
-	/*updateVector(a); 
-	updateVector(b);*/
-	p1 = a.proj(new vector(0,0,b.d.x,b.d.y));
-	bln = new vector(b.ln.x,b.ln.y);
-	p2 = a.proj(new vector(0,0,bln.d.x,bln.d.y));
+	var int = a.inter(b);
+	new circle(int.x, int.y,3).draw();	
+	var kk = a.project(b);
+	new vector(int.x,int.y,int.x+kk.vx,int.y+kk.vy).draw('green');
+	document.title = b.isinter(a);
+	
+//	new vector(a.p0.x,a.p0.y,a.p0.x+kk.p0.x,a.p0.y+kk.p0.y).draw('blue');
+	//new vector(a.p0.x,a.p0.y,a.p0.x+kk.p1.x,a.p0.y+kk.p1.y).draw('blue');
+//	new vector(a.p0.x,a.p0.y,a.p0.x,a.p0.y).add(new vector(kk.p0.x,kk.p0.y)).draw();
+//	new vector(a.p0.x,a.p0.y,a.p0.x,a.p0.y).add(new vector(kk.p1.x,kk.p1.y)).draw();
+	m = a;
+	/*
+	c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
+	var t = c.pp(b)/a.pp(b);	
+	var m = new vector(a.p0.x+a.vx*t,a.p0.y+a.vy*t);
+	m.draw();
+	if(true)
+		new circle(m.vx,m.vy,3).draw('red');
+	else
+		new circle(m.vx,m.vy,3).draw();
+		*/
+	
 
-	new vector(a.p0.x,a.p0.y,a.p0.x+p1.vx,a.p0.y+p1.vy).draw('red');
-	new vector(a.p0.x,a.p0.y,a.p0.x+p2.vx,a.p0.y+p2.vy).draw('red');
-	m = bln;
+	//m = bln;
+	
 	/*var tm = new vector(0,0,b.d.x,b.d.y);	
 	var m = b.proj(a);
 	var mm = projectVector(a, b.d.x, b.d.y);
