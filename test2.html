@@ -214,7 +214,7 @@ ctx = c.getContext("2d");
 ctx.font = '10pt Calibri';
 vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
-setInterval(frame,20);
+setInterval(frame,1000);
 a = new vector();
 a.p0 = new point(50,100);
 a.p1 = new point(90,10);
@@ -228,18 +228,32 @@ function frame()
 	a.draw();
 	
 	b = new vector('red');
-	b.p0 = new point(50,50);;
+	b.p0 = new point(50,20);;
 	b.p1 = new point(100,50);
 	b.draw();	
 	var int = a.inter(b);
 	new circle(int.x, int.y,3).draw();	
 	var kk = a.project(b);
 	var dist = new vector(int.x-a.p1.x,int.y-a.p1.y);
-	var rat = Math.abs(dist.vx/a.vx);
+	var rat = Math.abs(dist.vx/a.vx);	
+	var onb = new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat);
+	var onbp = new vector(int.x,int.y,int.x+kk.vxt,int.y+kk.vy);
+	onb.draw('green');
+	if(b.isinter(a))
+	{
+		a.p0 = onb.p1;		
+		vx = onbp.vx;
+		vy = onbp.vy;
+	}
+	else
+	{
+		a.p0.x += a.vx;
+		a.p0.y += a.vy;
+		a.p1.x += a.vx;
+		a.p1.y += a.vy;
+	}
+		
 	
-	
-	new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat).draw('green');
-	document.title = b.isinter(a);
 	
 //	new vector(a.p0.x,a.p0.y,a.p0.x+kk.p0.x,a.p0.y+kk.p0.y).draw('blue');
 	//new vector(a.p0.x,a.p0.y,a.p0.x+kk.p1.x,a.p0.y+kk.p1.y).draw('blue');
