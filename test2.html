@@ -7,12 +7,17 @@ function point(x,y)
 }
 
 
-function vector(x1, y1, x2,y2)
+function vector(x1, y1, x2,y2) //constructor to be solved
 {
-	if(x1 === undefined || y1 === undefined || x2 === undefined  || y2 === undefined )
+	if(x1 === undefined && y1 === undefined && x2 === undefined  && y2 === undefined )
 	{
 		this.p0 = new point(0,0);
 		this.p1 = new point(0,0);
+	}
+	else if(x2 === undefined  && y2 === undefined )
+	{
+		this.p0 = new point(0,0);
+		this.p1 = new point(x1,y1);
 	}
 	else
 	{
@@ -154,27 +159,8 @@ circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
 a.p0 = new point(150,100);
-a.p1 = new point(200,150);
-function projectVector(v1, dx, dy) {
-    var dp = ((v1.vx * dx) + (v1.vy * dy));
-    var proj = {};
-    proj.vx = dp * dx;
-    proj.vy = dp * dy;
-    return(proj);
-}
+a.p1 = new point(50,150);
 
-function updateVector(v) 
-{
-    v.vx = v.p1.x - v.p0.x;
-    v.vy = v.p1.y - v.p0.y;
-    v.len = Math.sqrt((v.vx * v.vx) + (v.vy * v.vy));
-    v.dx = v.vx / v.len;
-    v.dy = v.vy / v.len;
-    v.rx = -v.vy;
-    v.ry = v.vx;
-    v.lx = v.vy;
-    v.ly = -v.vx;
-}
 function frame()
 {
 	ctx.fillStyle="white";
@@ -189,16 +175,18 @@ function frame()
 	//draw
 	a.draw();
 	b = new vector();
-	b.p0 = new point(150,100);
-	b.p1 = new point(150,50);
+	b.p0 = a.p0;
+	b.p1 = new point(20,15);
 	b.draw();	
-	updateVector(a); 
-	updateVector(b);
-	p1 = projectVector(a, b.dx, b.dy);
-    p2 = projectVector(a, b.lx / b.len, b.ly / b.len);
-	new vector(a.p0.x,a.p0.y,p1.vx,p1,vy).draw();
-	new vector(a.p0.x,a.p0.y,p2.vx,p2,vy).draw();
-	
+	/*updateVector(a); 
+	updateVector(b);*/
+	p1 = a.proj(new vector(0,0,b.d.x,b.d.y));
+	bln = new vector(b.ln.x,b.ln.y);
+	p2 = a.proj(new vector(0,0,bln.d.x,bln.d.y));
+
+	new vector(a.p0.x,a.p0.y,a.p0.x+p1.vx,a.p0.y+p1.vy).draw('red');
+	new vector(a.p0.x,a.p0.y,a.p0.x+p2.vx,a.p0.y+p2.vy).draw('red');
+	m = bln;
 	/*var tm = new vector(0,0,b.d.x,b.d.y);	
 	var m = b.proj(a);
 	var mm = projectVector(a, b.d.x, b.d.y);
