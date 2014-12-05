@@ -7,7 +7,7 @@ function point(x,y)
 }
 
 
-function vector(x1, y1, x2,y2) //constructor to be solved
+function vector(x1, y1, x2,y2) //constructor to be resolved
 {
 	if(x1 === undefined && y1 === undefined && x2 === undefined  && y2 === undefined )
 	{
@@ -217,7 +217,7 @@ circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
 a.p0 = new point(50,100);
-a.p1 = new point(70,90);
+a.p1 = new point(90,10);
 
 function frame()
 {
@@ -234,7 +234,11 @@ function frame()
 	var int = a.inter(b);
 	new circle(int.x, int.y,3).draw();	
 	var kk = a.project(b);
-	new vector(int.x,int.y,int.x+kk.vx,int.y+kk.vy).draw('green');
+	var dist = new vector(int.x-a.p1.x,int.y-a.p1.y);
+	var rat = Math.abs(dist.vx/a.vx);
+	
+	
+	new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat).draw('green');
 	document.title = b.isinter(a);
 	
 //	new vector(a.p0.x,a.p0.y,a.p0.x+kk.p0.x,a.p0.y+kk.p0.y).draw('blue');
