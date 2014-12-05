@@ -109,14 +109,14 @@ function vector(x1, y1, x2,y2) //constructor to be resolved
 		c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
 		var t = c.pp(b)/a.pp(b);	
 		var k = new point(a.p0.x+a.vx*t,a.p0.y+a.vy*t);				
-		if(t >= 0 && t <= 1)
+		if(t > 0 && t < 1)
 		{
 			a = v;
 			b = this;
 			c = new vector(b.p0.x-a.p0.x,b.p0.y-a.p0.y);
 			var t = c.pp(b)/a.pp(b);	
 			var k = new point(a.p0.x+a.vx*t,a.p0.y+a.vy*t);				
-			if(t >= 0 && t <= 1)
+			if(t > 0 && t < 1)
 				return true;
 			else
 				return false;			
@@ -214,10 +214,10 @@ ctx = c.getContext("2d");
 ctx.font = '10pt Calibri';
 vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
-setInterval(frame,1000);
+setInterval(frame,100);
 a = new vector();
-a.p0 = new point(50,100);
-a.p1 = new point(90,10);
+a.p0 = new point(150,50);
+a.p1 = new point(140,50);
 
 function frame()
 {
@@ -228,8 +228,8 @@ function frame()
 	a.draw();
 	
 	b = new vector('red');
-	b.p0 = new point(50,20);;
-	b.p1 = new point(100,50);
+	b.p0 = new point(100,0);;
+	b.p1 = new point(100,100);
 	b.draw();	
 	var int = a.inter(b);
 	new circle(int.x, int.y,3).draw();	
@@ -237,20 +237,21 @@ function frame()
 	var dist = new vector(int.x-a.p1.x,int.y-a.p1.y);
 	var rat = Math.abs(dist.vx/a.vx);	
 	var onb = new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat);
-	var onbp = new vector(int.x,int.y,int.x+kk.vxt,int.y+kk.vy);
+	var onbp = new vector(int.x,int.y,int.x+kk.vx,int.y+kk.vy);
 	onb.draw('green');
 	if(b.isinter(a))
 	{
 		a.p0 = onb.p1;		
-		vx = onbp.vx;
-		vy = onbp.vy;
+		a.vx = onbp.vx;
+		a.vy = onbp.vy;
 	}
 	else
 	{
-		a.p0.x += a.vx;
-		a.p0.y += a.vy;
-		a.p1.x += a.vx;
-		a.p1.y += a.vy;
+		var p = new point(a.vx,a.vy);
+		a.p0.x += p.x;
+		a.p0.y += p.y;
+		a.p1.x += p.x;
+		a.p1.y += p.y;
 	}
 		
 	
@@ -293,8 +294,7 @@ function frame()
 	else
 		new line(p.x,p.y,p.x-10,p.y-(-(p.m2-p.m1))*10).draw();
 	*/
-	ctx.fillText(m.vx,10,400);
-	ctx.fillText(m.vy,10,420);
+
 	//end draw
 }
 </script>
