@@ -127,6 +127,20 @@ function vector(x1, y1, x2,y2) //constructor to be resolved
 		}
 
 	}
+	this.bounce = function(b)
+	{
+		var a = this;
+		var int = a.inter(b);
+		//new circle(int.x, int.y,3).draw();	
+		var kk = a.project(b);
+		var dist = new vector(int.x-a.p1.x,int.y-a.p1.y);
+		var rat = Math.abs(dist.vx/a.vx);	
+		var onb = new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat);
+		var onbp = new vector(int.x,int.y,int.x+kk.vx,int.y+kk.vy);
+		//onb.draw('green');
+		var isi = b.isinter(a);	
+		return [new vector(onb.p1.x,onb.p1.y,onbp.vx,onbp.vy),int];
+	}
 	this.proj = function(v)
 	{
 		var t1 = this.dp(v)*v.d.x;
@@ -160,7 +174,7 @@ function vector(x1, y1, x2,y2) //constructor to be resolved
 		this.ctx.moveTo(this.p0.x,this.p0.y);
 		this.ctx.lineTo(this.p1.x,this.p1.y);
 		this.ctx.stroke();
-		new circle(this.p0.x,this.p0.y,3).draw();
+		//new circle(this.p0.x,this.p0.y,3).draw();
 	};
 
 }
@@ -214,10 +228,10 @@ ctx = c.getContext("2d");
 ctx.font = '10pt Calibri';
 vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
-setInterval(frame,3000);
+setInterval(frame,20);
 a = new vector();
-a.p0 = new point(90,50);
-a.p1 = new point(100,50);
+a.p0 = new point(125,125);
+a.p1 = new point(130,120);
 
 function frame()
 {
@@ -225,12 +239,29 @@ function frame()
 	ctx.fillRect(0,0,500,500);
 	ctx.fillStyle="black";
 
-	a.draw();
+	a.draw();	
+	d0 = new vector();
+	d0.p0 = new point(100,100);
+	d0.p1 = new point(300,100);
+	d0.draw();	
 	
-	b = new vector('red');
-	b.p0 = new point(100,0);;
-	b.p1 = new point(100,100);
-	b.draw();	
+	d1 = new vector();
+	d1.p0 = new point(250,100);
+	d1.p1 = new point(300,300);
+	d1.draw();	
+	
+	d2 = new vector();
+	d2.p0 = new point(300,300);
+	d2.p1 = new point(100,300);
+	d2.draw();	
+	
+	d3 = new vector();
+	d3.p0 = new point(100,300);
+	d3.p1 = new point(100,100);
+	d3.draw();	
+	var walls = [d0,d1,d2,d3];
+	
+	/*
 	var int = a.inter(b);
 	new circle(int.x, int.y,3).draw();	
 	var kk = a.project(b);
@@ -238,15 +269,31 @@ function frame()
 	var rat = Math.abs(dist.vx/a.vx);	
 	var onb = new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat);
 	var onbp = new vector(int.x,int.y,int.x+kk.vx,int.y+kk.vy);
-	onb.draw('green');
-	var isi = b.isinter(a);
-	document.title = isi;
-	if(isi)
+	onb.draw('green');*/
+	var bounce = false;
+	var i;
+	var tt;
+	for(i = 0; i < walls.length; i ++)
 	{
+		var isi = walls[i].isinter(a);	
+		document.title = isi;
+		tt = a.bounce(walls[i]);	
+		if(isi && !(a.p0.x == tt[1].x || a.p0.y == tt[1].y))
+			{
+				bounce = true;
+				break;
+			}
+	}	
+	if(bounce)
+	{
+		a.p0 = tt[0].p0;
+		a.vx = tt[0].p1.x;
+		a.vy = tt[0].p1.y;
+	/*
 		a.p0 = onb.p1;		
 		a.vx = onbp.vx;
 		a.vy = onbp.vy;
-		
+		*/
 	}
 	else
 	{
