@@ -230,8 +230,8 @@ vector.prototype.ctx = ctx;
 circle.prototype.ctx = ctx;
 setInterval(frame,20);
 a = new vector();
-a.p0 = new point(125,125);
-a.p1 = new point(130,120);
+a.p0 = new point(150.000000001,150.000000001);
+a.p1 = new point(175.0000000001,162.000000001);
 
 function frame()
 {
@@ -239,7 +239,8 @@ function frame()
 	ctx.fillRect(0,0,500,500);
 	ctx.fillStyle="black";
 
-	a.draw();	
+	//a.draw();	
+	new circle(a.p0.x,a.p0.y,3).draw();
 	d0 = new vector();
 	d0.p0 = new point(100,100);
 	d0.p1 = new point(300,100);
@@ -270,25 +271,29 @@ function frame()
 	var onb = new vector(int.x,int.y,int.x+kk.vx*rat,int.y+kk.vy*rat);
 	var onbp = new vector(int.x,int.y,int.x+kk.vx,int.y+kk.vy);
 	onb.draw('green');*/
-	var bounce = false;
-	var i;
-	var tt;
-	for(i = 0; i < walls.length; i ++)
+	bb();
+	function bb()
 	{
-		var isi = walls[i].isinter(a);	
-		document.title = isi;
-		tt = a.bounce(walls[i]);	
-		if(isi && !(a.p0.x == tt[1].x || a.p0.y == tt[1].y))
-			{
-				bounce = true;
-				break;
-			}
-	}	
+		var bounce = false;
+		var i;
+		var tt;
+		for(i = 0; i < walls.length; i ++)
+		{
+			var isi = walls[i].isinter(a);	
+			document.title = isi;
+			tt = a.bounce(walls[i]);	
+			if(isi && !(a.p0.x == tt[1].x || a.p0.y == tt[1].y))
+				{
+					bounce = true;
+					break;
+				}
+		}	
 	if(bounce)
 	{
 		a.p0 = tt[0].p0;
 		a.vx = tt[0].p1.x;
 		a.vy = tt[0].p1.y;
+		
 	/*
 		a.p0 = onb.p1;		
 		a.vx = onbp.vx;
@@ -303,7 +308,7 @@ function frame()
 		a.p1.x += p.x;
 		a.p1.y += p.y;
 	}
-		
+	}	
 	
 	
 //	new vector(a.p0.x,a.p0.y,a.p0.x+kk.p0.x,a.p0.y+kk.p0.y).draw('blue');
